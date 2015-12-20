@@ -41,6 +41,7 @@ class Annealer(object):
     copy_strategy = 'deepcopy'
     user_exit = False
     save_state_on_exit = True
+    verbose = True
 
     def __init__(self, initial_state=None, load_state=None):
         if initial_state:
@@ -121,16 +122,18 @@ class Annealer(object):
 
         elapsed = time.time() - self.start
         if step == 0:
-            print(' Temperature        Energy    Accept   Improve     Elapsed   Remaining')
-            sys.stdout.write('\r%12.2f  %12.2f                      %s            ' % \
-                (T, E, time_string(elapsed)))
-            sys.stdout.flush()
+            if verbose:
+                print(' Temperature        Energy    Accept   Improve     Elapsed   Remaining')
+                sys.stdout.write('\r%12.2f  %12.2f                      %s            ' % \
+                    (T, E, time_string(elapsed)))
+                sys.stdout.flush()
         else:
             remain = (self.steps - step) * (elapsed / step)
-            sys.stdout.write('\r%12.2f  %12.2f  %7.2f%%  %7.2f%%  %s  %s' % \
-            (T, E, 100.0 * acceptance, 100.0 * improvement,\
-            time_string(elapsed), time_string(remain))),
-            sys.stdout.flush()
+            if verbose:
+                sys.stdout.write('\r%12.2f  %12.2f  %7.2f%%  %7.2f%%  %s  %s' % \
+                (T, E, 100.0 * acceptance, 100.0 * improvement,\
+                time_string(elapsed), time_string(remain))),
+                sys.stdout.flush()
 
     def anneal(self):
         """Minimizes the energy of a system by simulated annealing.
